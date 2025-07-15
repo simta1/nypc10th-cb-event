@@ -1,0 +1,1 @@
+https://nypc10th-cb-event.xvive.link/ 브루트포스봇 만드는 중   
