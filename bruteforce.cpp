@@ -105,6 +105,7 @@ void backtracking() {
         board[i][j] = boardVal;
         owner[i][j] = ownerVal;
     }
+    player = 3 - player;
 }
 
 
