@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-constexpr int THRESHOLD = 2;
+constexpr int THRESHOLD = 3;
 
 constexpr int rows = 11, cols = 10;
 constexpr int INF = 1e5;
@@ -58,9 +58,10 @@ void print() {
     }
 }
 
+int currentRound = 0;
 void printHistoryWithScore(int score) {
     cout << "---------------\n";
-    cout << "history(" << moveHistory.size() << "), score : " << score << "\n";
+    cout << "history(" << moveHistory.size() << "), score : " << score << ", round : " << currentRound << "\n";
     for (auto tmp : moveHistory) {
         // cout << "---\n";
         // for (auto [i, j, boardVal, ownerVal] : tmp) cout << i << " " << j << " " << boardVal << " " << ownerVal << "\n";
@@ -79,7 +80,8 @@ int getScore() {
         }
     }
     
-    if (score > 30) printHistoryWithScore(score);
+    ++currentRound;
+    if (score >= 50) printHistoryWithScore(score);
     return score;
 }
 
