@@ -1,7 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-constexpr int THRESHOLD = 3;
+constexpr int numberOfChoices = 3;
+constexpr int SCORE_THRESHOLD = 40;
 
 constexpr int rows = 11, cols = 10;
 constexpr int INF = 1e5;
@@ -81,7 +82,7 @@ int getScore() {
     }
     
     ++currentRound;
-    if (score >= 50) printHistoryWithScore(score);
+    if (score >= SCORE_THRESHOLD) printHistoryWithScore(score);
     return score;
 }
 
@@ -124,12 +125,14 @@ bool botMove() {
             int colPrefCnt[cols][3] = {0};
             int colPrefSum[cols] = {0}; // colPrefSum[col] := sum(board[startRow:row][col])
 
+            int prevRowLastCol = cols;
             for (int row = startRow; row < rows; row++) {
                 int cnt[3] = {0};
                 int sum = 0;
 
-                bool flag = false;
-                for (int col = startCol; col < cols; col++) {
+                int curRowLastCol = -1;
+                for (int col = startCol; col < cols && col < prevRowLastCol; col++) {
+                    curRowLastCol = col;
                     ++colPrefCnt[col][owner[row][col]];
                     cnt[0] += colPrefCnt[col][0];
                     cnt[1] += colPrefCnt[col][1];
@@ -167,11 +170,11 @@ bool botMove() {
                             // }
                         }
                         
-                        if (col == startCol) flag = true;
                         break;
                     }
                 }
-                if (flag) break;
+                prevRowLastCol = curRowLastCol;
+                if (curRowLastCol == startCol) break;
             }
         }
     }
@@ -194,12 +197,14 @@ int personMove() {
             int colPrefCnt[cols][3] = {0};
             int colPrefSum[cols] = {0}; // colPrefSum[col] := sum(board[startRow:row][col])
 
+            int prevRowLastCol = cols;
             for (int row = startRow; row < rows; row++) {
                 int cnt[3] = {0};
                 int sum = 0;
 
-                bool flag = false;
-                for (int col = startCol; col < cols; col++) {
+                int curRowLastCol = -1;
+                for (int col = startCol; col < cols && col < prevRowLastCol; col++) {
+                    curRowLastCol = col;
                     ++colPrefCnt[col][owner[row][col]];
                     cnt[0] += colPrefCnt[col][0];
                     cnt[1] += colPrefCnt[col][1];
@@ -220,11 +225,11 @@ int personMove() {
                             candi.emplace_back(i1, j1, i2, j2);
                         }
                         
-                        if (col == startCol) flag = true;
                         break;
                     }
                 }
-                if (flag) break;
+                prevRowLastCol = curRowLastCol;
+                if (curRowLastCol == startCol) break;
             }
         }
     }
@@ -234,7 +239,7 @@ int personMove() {
     int res = -INF;
     // TODO: 턴 넘기는 것도 고려해야 됨
     
-    if (candi.size() > THRESHOLD) candi.resize(THRESHOLD); // TODO: 삭제
+    if (candi.size() > numberOfChoices) candi.resize(numberOfChoices); // TODO: candi 섞기
     for (auto [i1, j1, i2, j2] : candi) {
         move(i1, i2, j1, j2);
         if (botMove()) {

@@ -55,6 +55,15 @@ let predefinedBoard = [
     "3857217479",
 ];
 
+let flipQueue = [];
+
+function init(data) {
+  flipQueue = data.trim().split('\n').map(line => {
+    return line.trim().split(/\s+/).map(Number);
+  });
+  console.log('Flip queue initialized with', flipQueue.length, 'entries.');
+}
+
 function setup() {
 	createCanvas(cols * cellSize, rows * cellSize + 40);
 	textAlign(CENTER, CENTER);
@@ -253,6 +262,14 @@ function keyPressed() {
         });
         flip(i1, i2, j1, j2);
     }
+	if (key === 'c' || key === 'C') {
+		if (flipQueue.length > 0) {
+			let [i1, j1, i2, j2] = flipQueue.shift();
+			console.log(`Flipping (${i1}, ${j1}) to (${i2}, ${j2})`);
+			flip(i1, i2, j1, j2);
+		}
+		else console.log('No more flip instructions.');
+	}
 }
 
 function updateHighlight() {
