@@ -1,7 +1,9 @@
 let board = [], owner = [];
 let rows = 11, cols = 10;
 let cellSize = 60;
-let player = 1;
+const ME = 1;
+const PINKBIN = 2;
+let player = ME;
 
 let easyMode = true;
 let highlight = [];
@@ -28,17 +30,29 @@ let predefinedBoard = [
     // "7762433665",
     // "1278887337",
     // "5399784517",
-    "3439574859",
-    "9856647774",
-    "7977889363",
-    "1727317271",
-    "9619428888",
-    "6615551959",
-    "9678533872",
-    "4347914671",
-    "4131525697",
-    "4444749359",
-    "2145429719",
+    //
+    // "3439574859",
+    // "9856647774",
+    // "7977889363",
+    // "1727317271",
+    // "9619428888",
+    // "6615551959",
+    // "9678533872",
+    // "4347914671",
+    // "4131525697",
+    // "4444749359",
+    // "2145429719",
+    "2876285638",
+    "9154931916",
+    "1233346925",
+    "3216422421",
+    "5515543293",
+    "2749166953",
+    "2522921129",
+    "3273759573",
+    "9565865555",
+    "8461542573",
+    "3857217479",
 ];
 
 function setup() {
@@ -214,10 +228,22 @@ function flip(i1, i2, j1, j2) {
 }
 
 function keyPressed() {
-    if (key === 'h' || key === 'H') easyMode = !easyMode;
-    if (key === 'z' || key === 'Z') undo();
-    if (key === 'y' || key === 'Y') redo();
-    if (key == ' ') player = 3 - player;
+    if (key === 'h' || key === 'H') {
+        easyMode = !easyMode;
+        updateHighlight();
+    }
+    if (key === 'z' || key === 'Z') {
+        undo();
+        updateHighlight();
+    }
+    if (key === 'y' || key === 'Y') {
+        redo();
+        updateHighlight();
+    }
+    if (key == ' ') {
+        player = 3 - player;
+        updateHighlight();
+    }
     if (key === 'b' || key === 'B') {
         if (pos.length === 0) return;
         let {i1, i2, j1, j2} = pos.reduce((a, b) => { // TODO 아직 정확한 기준 모르긴 함
