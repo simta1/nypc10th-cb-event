@@ -2,7 +2,6 @@
 using namespace std;
 
 constexpr int numberOfChoices = 4;
-constexpr int SCORE_THRESHOLD = 40;
 
 constexpr int rows = 11, cols = 10;
 
@@ -88,7 +87,6 @@ void calScore() {
 
     if (bestScore < score) {
         bestScore = score;
-        if (score >= SCORE_THRESHOLD) printHistoryWithScore(score);
         printHistoryWithScore(score);
     }
     
