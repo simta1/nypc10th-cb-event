@@ -54,7 +54,7 @@ void printHistoryWithScore(int score) {
     }
 }
 
-constexpr int PRINT_INTERVAL = 500000;
+constexpr int PRINT_INTERVAL = 250000;
 void calScore() {
     int score = 0;
     for (int i = 0; i < rows; i++) {
@@ -70,7 +70,7 @@ void calScore() {
     }
     
     ++currentRound;
-    if (currentRound % PRINT_INTERVAL == 0) cout << "current round: " << currentRound << "\n";
+    if (currentRound % PRINT_INTERVAL == 0) cout << "current round: " << currentRound << ", best score: " << bestScore << "\n";
     return;
 }
 
