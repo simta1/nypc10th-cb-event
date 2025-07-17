@@ -17,42 +17,20 @@ int bestScore = -INF;
 random_device rd;
 mt19937 g(rd());
 
-// string input = R"(
-// 3439574859
-// 9856647774
-// 7977889363
-// 1727317271
-// 9619428888
-// 6615551959
-// 9678533872
-// 4347914671
-// 4131525697
-// 4444749359
-// 2145429719
-// )";
-
-string input = R"(
-2876285638
-9154931916
-1233346925
-3216422421
-5515543293
-2749166953
-2522921129
-3273759573
-9565865555
-8461542573
-3857217479
-)";
-
-
 void init() {
-    istringstream iss(input);
+    ifstream fin("board.txt");
+    if (!fin) {
+        cerr << "input.txt 파일을 열 수 없습니다.\n";
+        exit(1);
+    }
+
     for (int i = 0; i < rows; i++) {
         string st;
-        iss >> st;
+        fin >> st;
         for (int j = 0; j < cols; j++) board[i][j] = st[j] & 15;
     }
+    
+    fin.close();
 }
 
 void print() {

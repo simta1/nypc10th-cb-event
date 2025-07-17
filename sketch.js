@@ -18,53 +18,17 @@ let redoStack = [];
 let startX, startY, endX, endY;
 let dragging = false;
 
-let predefinedBoard = [
-    // "8967385467",
-    // "5851164763",
-    // "5156126281",
-    // "8292326826",
-    // "1711694727",
-    // "8162626183",
-    // "3849859258",
-    // "9747176947",
-    // "7762433665",
-    // "1278887337",
-    // "5399784517",
-    //
-    // "3439574859",
-    // "9856647774",
-    // "7977889363",
-    // "1727317271",
-    // "9619428888",
-    // "6615551959",
-    // "9678533872",
-    // "4347914671",
-    // "4131525697",
-    // "4444749359",
-    // "2145429719",
-    "2876285638",
-    "9154931916",
-    "1233346925",
-    "3216422421",
-    "5515543293",
-    "2749166953",
-    "2522921129",
-    "3273759573",
-    "9565865555",
-    "8461542573",
-    "3857217479",
-];
+let predefinedBoard = [];
 
-let flipQueue = [];
-
-function init(data) {
-  flipQueue = data.trim().split('\n').map(line => {
-    return line.trim().split(/\s+/).map(Number);
-  });
-  console.log('Flip queue initialized with', flipQueue.length, 'entries.');
+async function loadBoard() {
+	let response = await fetch('board.txt');
+	let text = await response.text();
+	let lines = text.trim().split('\n');
+	predefinedBoard = lines.map(line => line.trim());
 }
 
-function setup() {
+async function setup() {
+	await loadBoard();
 	createCanvas(cols * cellSize, rows * cellSize + 40);
 	textAlign(CENTER, CENTER);
 	textSize(24);
@@ -365,4 +329,13 @@ function redo() {
 	owner = nextState.owner.map(row => row.slice());
 	player = nextState.player;
 	updateHighlight();
+}
+
+// bruteforce.cpp에서 나온 결과 재현용 // 직접 개발자도구 콘솔탭에서 init(`{bruteforce.cpp history출력결과}`); 이런식으로 실행
+let flipQueue = [];
+function init(data) {
+  flipQueue = data.trim().split('\n').map(line => {
+    return line.trim().split(/\s+/).map(Number);
+  });
+  console.log('Flip queue initialized with', flipQueue.length, 'entries.');
 }
