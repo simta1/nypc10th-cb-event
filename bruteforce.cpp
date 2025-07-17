@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-constexpr int numberOfChoices = 3;
+constexpr int numberOfChoices = 4;
 constexpr int SCORE_THRESHOLD = 40;
 
 constexpr int rows = 11, cols = 10;
@@ -14,6 +14,9 @@ vector<vector<tuple<int, int, int, int> > > moveHistory;
 
 constexpr int INF = 1e5;
 int bestScore = -INF;
+
+random_device rd;
+mt19937 g(rd());
 
 // string input = R"(
 // 3439574859
@@ -228,6 +231,7 @@ void personMove() {
     }
     
     // TODO: 턴 넘기는 것도 고려해야 됨
+	shuffle(candi.begin(), candi.end(), g);
     if (candi.size() > numberOfChoices) candi.resize(numberOfChoices); // TODO: candi 섞기
     for (auto [i1, j1, i2, j2] : candi) {
         move(i1, i2, j1, j2);
