@@ -29,6 +29,19 @@ async function loadBoard() {
 
 async function setup() {
 	await loadBoard();
+
+	try {
+		const res = await fetch('solution.txt');
+		if (res.ok) {
+			const data = await res.text();
+			init(data);
+		}
+		else console.warn('solution.txt 열지 못함');
+	}
+	catch (e) {
+		console.warn('solution.txt 로딩 중 예외 발생, 무시함:', e);
+	}
+
 	createCanvas(cols * cellSize, rows * cellSize + 40);
 	textAlign(CENTER, CENTER);
 	textSize(24);
@@ -213,13 +226,13 @@ function keyPressed() {
         redo();
         updateHighlight();
     }
-    if (key == ' ') {
+    if (key === ' ') {
         player = 3 - player;
         updateHighlight();
     }
     if (key === 'b' || key === 'B') {
         if (pos.length === 0) return;
-        let {i1, i2, j1, j2} = pos.reduce((a, b) => { // TODO 아직 정확한 기준 모르긴 함
+        let {i1, i2, j1, j2} = pos.reduce((a, b) => { // TODO
             if (a.i1 < b.i1) return a;
             if (a.i1 > b.i1) return b;
             return a.j1 <= b.j1 ? a : b;
@@ -331,11 +344,10 @@ function redo() {
 	updateHighlight();
 }
 
-// bruteforce.cpp에서 나온 결과 재현용 // 직접 개발자도구 콘솔탭에서 init(`{bruteforce.cpp history출력결과}`); 이런식으로 실행
 let flipQueue = [];
 function init(data) {
-  flipQueue = data.trim().split('\n').map(line => {
-    return line.trim().split(/\s+/).map(Number);
-  });
-  console.log('Flip queue initialized with', flipQueue.length, 'entries.');
+	flipQueue = data.trim().split('\n').splice(1).map(line => {
+		return line.trim().split(/\s+/).map(Number);
+	});
+	console.log('Flip queue initialized with', flipQueue.length, 'entries.');
 }

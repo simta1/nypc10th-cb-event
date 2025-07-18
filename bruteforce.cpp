@@ -1,26 +1,24 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-constexpr int numberOfChoices = 4;
+const string INPUT_DIR = "board.txt";
+const string OUTPUT_DIR = "solution.txt";
 
 constexpr int rows = 11, cols = 10;
-
 int board[rows][cols], owner[rows][cols];
-
 int player = 1;
-
-vector<vector<tuple<int, int, int, int> > > moveHistory;
 
 constexpr int INF = 1e5;
 int bestScore = -INF;
-
+constexpr int numberOfChoices = 4;
+vector<vector<tuple<int, int, int, int> > > moveHistory;
 random_device rd;
 mt19937 g(rd());
 
 void init() {
-    ifstream fin("board.txt");
+    ifstream fin(INPUT_DIR);
     if (!fin) {
-        cerr << "input.txt 파일을 열 수 없습니다.\n";
+        cerr << INPUT_DIR << "를 열 수 없습니다.\n";
         exit(1);
     }
 
@@ -46,12 +44,24 @@ void printHistoryWithScore(int score) {
     cout << "---------------\n";
     cout << "history(" << moveHistory.size() << "), score : " << score << ", round : " << currentRound << "\n";
     for (auto tmp : moveHistory) {
-        // cout << "---\n";
-        // for (auto [i, j, boardVal, ownerVal] : tmp) cout << i << " " << j << " " << boardVal << " " << ownerVal << "\n";
         auto [i1, j1, _, __] = tmp.front();
         auto [i2, j2, ___, ____] = tmp.back();
         cout << i1 << " " << j1 << " " << i2 << " " << j2 << "\n";
     }
+
+    ofstream fout(OUTPUT_DIR, ios::trunc);
+    if (!fout) {
+        cerr << OUTPUT_DIR << "를 열 수 없습니다.\n";
+    }
+    else {
+        fout << "history(" << moveHistory.size() << "), score : " << score << ", round : " << currentRound << "\n";
+        for (auto tmp : moveHistory) {
+            auto [i1, j1, _, __] = tmp.front();
+            auto [i2, j2, ___, ____] = tmp.back();
+            fout << i1 << " " << j1 << " " << i2 << " " << j2 << "\n";
+        }
+    }
+    fout.close();
 }
 
 constexpr int PRINT_INTERVAL = 250000;
