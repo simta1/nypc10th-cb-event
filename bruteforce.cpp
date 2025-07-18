@@ -10,10 +10,13 @@ int player = 1;
 
 constexpr int INF = 1e5;
 int bestScore = -INF;
-constexpr int numberOfChoices = 4;
+constexpr int numberOfChoices = 3;
 vector<vector<tuple<int, int, int, int> > > moveHistory;
 random_device rd;
 mt19937 g(rd());
+
+long long currentRound = 1;
+long long restartCnt = 0;
 
 void init() {
     ifstream fin(INPUT_DIR);
@@ -39,7 +42,6 @@ void print() {
     }
 }
 
-int currentRound = 1;
 void printHistoryWithScore(int score) {
     cout << "---------------\n";
     cout << "history(" << moveHistory.size() << "), score : " << score << ", round : " << currentRound << "\n";
@@ -79,7 +81,7 @@ void calScore() {
         printHistoryWithScore(score);
     }
     
-    if (currentRound % PRINT_INTERVAL == 0) cout << "current round: " << currentRound << ", best score: " << bestScore << "\n";
+    if (currentRound % PRINT_INTERVAL == 0) cout << "restart: " << restartCnt << ", current round: " << currentRound << ", best score: " << bestScore << "\n";
     ++currentRound;
     return;
 }
@@ -220,7 +222,7 @@ void personMove() {
     
     // TODO: 턴 넘기는 것도 고려해야 됨
 	shuffle(candi.begin(), candi.end(), g);
-    if (candi.size() > numberOfChoices) candi.resize(numberOfChoices); // TODO: candi 섞기
+    if (candi.size() > numberOfChoices) candi.resize(numberOfChoices);
     for (auto [i1, j1, i2, j2] : candi) {
         move(i1, i2, j1, j2);
         if (botMove()) {
@@ -242,10 +244,9 @@ int main() {
     //     // print();
     // }
     
-    long long cnt = 1;
     while (true) {
         personMove();
-        cout << cnt++ << "th restart with a new seed" << "\n";
+        cout << ++restartCnt << "th restart with a new seed" << "\n";
     }
     
     return 0;
