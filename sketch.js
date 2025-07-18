@@ -242,8 +242,15 @@ function keyPressed() {
 	if (key === 'c' || key === 'C') {
 		if (flipQueue.length > 0) {
 			let [i1, j1, i2, j2] = flipQueue.shift();
-			console.log(`Flipping (${i1}, ${j1}) to (${i2}, ${j2})`);
-			flip(i1, i2, j1, j2);
+			if (i1 == -1 && j1 == -1 && i2 == -1 && j2 == -1) {
+				console.log(`skip turn`);
+				player = 3 - player;
+				updateHighlight();
+			}
+			else {
+				console.log(`Flipping (${i1}, ${j1}) to (${i2}, ${j2})`);
+				flip(i1, i2, j1, j2);
+			}
 		}
 		else console.log('No more flip instructions.');
 	}
@@ -346,8 +353,11 @@ function redo() {
 
 let flipQueue = [];
 function init(data) {
-	flipQueue = data.trim().split('\n').splice(1).map(line => {
-		return line.trim().split(/\s+/).map(Number);
-	});
+	const lines = data.trim().split('\n');
+	for (let i = 1; i < lines.length; i++) {
+		let line = lines[i].trim();
+		if (line === "skip turn") line = "-1 -1 -1 -1";
+		flipQueue.push(line.trim().split(/\s+/).map(Number));
+	}
 	console.log('Flip queue initialized with', flipQueue.length, 'entries.');
 }

@@ -14,6 +14,7 @@ constexpr int numberOfChoices = 3;
 vector<vector<tuple<int, int, int, int> > > moveHistory;
 random_device rd;
 mt19937 g(rd());
+uniform_int_distribution<int> dist(1, 100);
 
 long long currentRound = 1;
 long long restartCnt = 0;
@@ -46,9 +47,12 @@ void printHistoryWithScore(int score) {
     cout << "---------------\n";
     cout << "history(" << moveHistory.size() << "), score : " << score << ", round : " << currentRound << "\n";
     for (auto tmp : moveHistory) {
-        auto [i1, j1, _, __] = tmp.front();
-        auto [i2, j2, ___, ____] = tmp.back();
-        cout << i1 << " " << j1 << " " << i2 << " " << j2 << "\n";
+        if (tmp.empty()) cout << "skip turn\n";
+        else {
+            auto [i1, j1, _, __] = tmp.front();
+            auto [i2, j2, ___, ____] = tmp.back();
+            cout << i1 << " " << j1 << " " << i2 << " " << j2 << "\n";
+        }
     }
 
     ofstream fout(OUTPUT_DIR, ios::trunc);
@@ -58,9 +62,12 @@ void printHistoryWithScore(int score) {
     else {
         fout << "history(" << moveHistory.size() << "), score : " << score << ", round : " << currentRound << "\n";
         for (auto tmp : moveHistory) {
-            auto [i1, j1, _, __] = tmp.front();
-            auto [i2, j2, ___, ____] = tmp.back();
-            fout << i1 << " " << j1 << " " << i2 << " " << j2 << "\n";
+            if (tmp.empty()) fout << "skip turn\n";
+            else {
+                auto [i1, j1, _, __] = tmp.front();
+                auto [i2, j2, ___, ____] = tmp.back();
+                fout << i1 << " " << j1 << " " << i2 << " " << j2 << "\n";
+            }
         }
     }
     fout.close();
@@ -220,9 +227,12 @@ void personMove() {
         return;
     }
     
-    // TODO: 턴 넘기는 것도 고려해야 됨
 	shuffle(candi.begin(), candi.end(), g);
     if (candi.size() > numberOfChoices) candi.resize(numberOfChoices);
+
+    // 턴 넘기는 경우 고려
+    if (dist(g) <= 10) candi[0] = {0, 0, -1, -1};
+
     for (auto [i1, j1, i2, j2] : candi) {
         move(i1, i2, j1, j2);
         if (botMove()) {
