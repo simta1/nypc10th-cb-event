@@ -242,10 +242,10 @@ int main() {
     //     // print();
     // }
     
-    int cnt = 1;
+    long long cnt = 1;
     while (true) {
         personMove();
-        cout << cnt << "th restart with a new seed" << "\n";
+        cout << cnt++ << "th restart with a new seed" << "\n";
     }
     
     return 0;

@@ -2,5 +2,4 @@
 a.out
 bruteforce
 bruteforce.exe
-board.txt
-solution.txt
+*.txt
