@@ -39,7 +39,7 @@ void print() {
     }
 }
 
-int currentRound = 0;
+int currentRound = 1;
 void printHistoryWithScore(int score) {
     cout << "---------------\n";
     cout << "history(" << moveHistory.size() << "), score : " << score << ", round : " << currentRound << "\n";
@@ -79,8 +79,8 @@ void calScore() {
         printHistoryWithScore(score);
     }
     
-    ++currentRound;
     if (currentRound % PRINT_INTERVAL == 0) cout << "current round: " << currentRound << ", best score: " << bestScore << "\n";
+    ++currentRound;
     return;
 }
 
@@ -242,8 +242,11 @@ int main() {
     //     // print();
     // }
     
-    personMove();
-    cout << "best score: " << bestScore << "\n";
+    int cnt = 1;
+    while (true) {
+        personMove();
+        cout << cnt << "th restart with a new seed" << "\n";
+    }
     
     return 0;
 }
