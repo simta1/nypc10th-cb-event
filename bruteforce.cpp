@@ -14,7 +14,10 @@ constexpr int numberOfChoices = 3;
 vector<vector<tuple<int, int, int, int> > > moveHistory;
 random_device rd;
 mt19937 g(rd());
+
 uniform_int_distribution<int> dist(1, 100);
+constexpr bool enableSkipTurn = false;
+constexpr int probSkipTurn = 10;
 
 long long currentRound = 1;
 long long restartCnt = 0;
@@ -231,7 +234,9 @@ void personMove() {
     if (candi.size() > numberOfChoices) candi.resize(numberOfChoices);
 
     // 턴 넘기는 경우 고려
-    if (dist(g) <= 10) candi[0] = {0, 0, -1, -1};
+    if constexpr (enableSkipTurn) {
+        if (dist(g) <= probSkipTurn) candi[0] = {0, 0, -1, -1};
+    }
 
     for (auto [i1, j1, i2, j2] : candi) {
         move(i1, i2, j1, j2);
