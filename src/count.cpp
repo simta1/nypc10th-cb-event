@@ -1,8 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const string INPUT_DIR = "board.txt";
-const string OUTPUT_DIR = "solution.txt";
+const string INPUT_DIR = "data/board.txt";
 
 constexpr int rows = 11, cols = 10;
 int board[rows][cols];

@@ -1,3 +1,6 @@
+const BOARD_DIR = 'data/board.txt';
+const MOVE_DIR = 'data/solution.txt';
+
 let board = [], owner = [];
 let rows = 11, cols = 10;
 let cellSize = 60;
@@ -21,7 +24,7 @@ let dragging = false;
 let predefinedBoard = [];
 
 async function loadBoard() {
-	let response = await fetch('board.txt');
+	let response = await fetch(BOARD_DIR);
 	let text = await response.text();
 	let lines = text.trim().split('\n');
 	predefinedBoard = lines.map(line => line.trim());
@@ -31,15 +34,15 @@ async function setup() {
 	await loadBoard();
 
 	try {
-		const res = await fetch('solution.txt');
+		const res = await fetch(MOVE_DIR);
 		if (res.ok) {
 			const data = await res.text();
 			init(data);
 		}
-		else console.warn('solution.txt 열지 못함');
+		else console.warn(`${MOVE_DIR} 열지 못함`);
 	}
 	catch (e) {
-		console.warn('solution.txt 로딩 중 예외 발생, 무시함:', e);
+		console.warn(`${MOVE_DIR} 로딩 중 예외 발생, 무시함:`, e);
 	}
 
 	createCanvas(cols * cellSize, rows * cellSize + 40);

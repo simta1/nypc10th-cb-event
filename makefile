@@ -1,18 +1,24 @@
 CXX = g++
 CXXFLAGS = -O2 -std=c++17
-TARGET = bruteforce
-SRC = bruteforce.cpp
+BIN_DIR = bin
+SRC_DIR = src
 
-all: $(TARGET) count
+SRC = $(wildcard src/*.cpp)
+TARGETS = $(patsubst src/%.cpp, bin/%, $(SRC))
 
-$(TARGET): $(SRC)
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SRC)
+.PHONY: all clean run
 
-run: $(TARGET)
-	./$(TARGET)
+all: $(TARGETS)
+
+$(BIN_DIR)/%: $(SRC_DIR)/%.cpp
+	@mkdir -p $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) -o $@ $<
+
+run: $(BIN_DIR)/bruteforce
+	./$(BIN_DIR)/bruteforce
+
+count: $(BIN_DIR)/count
+	./$(BIN_DIR)/count
 
 clean:
-	rm -f $(TARGET)
-	
-count: count.cpp
-	$(CXX) $(CXXFLAGS) -o count count.cpp
+	rm -f $(TARGETS)
