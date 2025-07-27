@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+backup_file="$1"
+
+if [ -z "$backup_file" ]; then
+	echo "usage: $0 <filename>" >&2
+	echo "예시: $0 backup/backup_score89.md" >&2
+	exit 1
+fi
+
+if [ ! -f "$backup_file" ]; then
+	echo "백업 파일이 존재하지 않습니다: $backup_file" >&2
+	exit 1
+fi
+
+: > data/board.txt
+: > data/solution.txt
+
+awk '
+/^## board.txt$/     { mode="b"; next }
+(/^## solution.txt$/){ mode="s"; next }
+
+/^```/ {
+	if (mode=="b") in_b = !in_b
+	else if (mode=="s") in_s = !in_s
+	next
+}
+
+in_b {
+	if (have_b) printf "%s\n", prev_b > "data/board.txt"
+	prev_b = $0; have_b = 1
+	next
+}
+
+in_s {
+	if (have_s) printf "%s\n", prev_s > "data/solution.txt"
+	prev_s = $0; have_s = 1
+	next
+}
+
+END {
+	if (have_b) printf "%s", prev_b > "data/board.txt" # 마지막 줄: \n 없음
+	if (have_s) printf "%s\n", prev_s > "data/solution.txt"
+}
+' "$backup_file"

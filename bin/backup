@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+timestamp=$(date +"%Y%m%d")
+score=$(grep -o 'score *: *[0-9]\+' data/solution.txt | grep -o '[0-9]\+')
+out="backup/backup_score${score}.md"
+
+{
+    echo "## board.txt"
+    echo '```'
+    cat data/board.txt
+    echo
+    echo '```'
+
+    echo "## board 숫자별 개수"
+    echo "|  숫자  |  개수  |"
+    echo "|-------|-------|"
+    make count | awk -F ':' '/^[0-9]+: *[0-9]+$/ {
+        gsub(/^[ \t]+|[ \t]+$/, "", $1)
+        gsub(/^[ \t]+|[ \t]+$/, "", $2)
+        printf "|\t%s\t|\t%s\t|\n", $1, $2
+    }'
+
+    echo "## solution.txt"
+    echo '```'
+    cat data/solution.txt
+    printf '```'
+} > "$out"
+
+echo "백업 완료: $out"
