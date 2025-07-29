@@ -3,6 +3,7 @@ import cv2
 import pytesseract
 import os
 import numpy as np
+import sys
 
 import subprocess
 import platform
@@ -84,13 +85,83 @@ def extract_grid(img, rows=11, cols=10):
         for r in range(rows)
     ]
 
+def ask_user_for_number(cell_img, predicted, confidence):
+    from PIL import Image, ImageTk
+    import tkinter as tk
+
+    result_holder = {"value": None}
+    root = tk.Tk()
+    root.title("숫자 확인")
+    root.geometry("320x430")
+    root.resizable(False, False)
+
+    # label_text = f"OCR : {predicted} (신뢰도: {confidence}%)\n직접 입력 (1~9)"
+    label_text = "OCR 실패\n직접 입력 (1~9)"
+
+    label = tk.Label(root, text=label_text, font=("Arial", 12), justify='center')
+    label.pack(pady=10)
+
+    # 이미지 표시
+    img_rgb = cv2.cvtColor(cell_img, cv2.COLOR_BGR2RGB)
+    img_pil = Image.fromarray(img_rgb)
+    img_pil = img_pil.resize((200, 200))
+    img_tk = ImageTk.PhotoImage(img_pil)
+    canvas = tk.Label(root, image=img_tk)
+    canvas.image = img_tk
+    canvas.pack()
+
+    # 입력창
+    entry = tk.Entry(root, font=("Arial", 20), justify='center')
+    entry.pack(pady=20)
+    entry.focus_set() # 자동 포커스
+
+    def submit(event=None):
+        val = entry.get().strip()
+        if len(val) == 1 and val in "123456789":
+            result_holder["value"] = val
+            root.destroy()
+        else:
+            label.config(text="숫자 1~9 중 하나만 입력해주세요!")
+            
+    def clear_input(event=None):
+        entry.delete(0, tk.END) # 입력창 비우기
+        
+    def force_quit(event=None):
+        sys.exit(0)
+
+    btn = tk.Button(root, text="입력", command=submit, font=("Arial", 14))
+    btn.pack()
+
+    root.bind('<Return>', submit)  # Enter 키 입력 처리
+    root.bind('<Escape>', clear_input)
+    root.bind('<Control-c>', force_quit)
+
+    root.mainloop()
+    return result_holder["value"]
+
 # 숫자 OCR
-def recognize_number(cell_img):
+def recognize_number(cell_img, threshold=70):
     gray = cv2.cvtColor(cell_img, cv2.COLOR_BGR2GRAY)
     _, threshed = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)
     config = '--oem 3 --psm 10 -c tessedit_char_whitelist=123456789'
-    text = pytesseract.image_to_string(threshed, config=config)
-    return text.strip() or "0"
+
+    data = pytesseract.image_to_data(threshed, config=config, output_type=pytesseract.Output.DICT)
+
+    text = ''
+    confidence = -1
+    for i in range(len(data['text'])):
+        candidate = data['text'][i].strip()
+        conf = int(data['conf'][i])
+        if candidate and candidate.isdigit():
+            text = candidate
+            confidence = conf
+            break
+
+    if confidence < threshold or not text:
+        predicted = text or "(없음)"
+        user_input = ask_user_for_number(cell_img, predicted, confidence)
+        return user_input or "0"
+    return text
 
 def main():
     try:
@@ -111,11 +182,6 @@ def main():
             for i, row in enumerate(grid):
                 numbers = []
                 for j, cell in enumerate(row):
-                    number = recognize_number(cell)
-                    numbers.append(number)
-                    # print(f"OCR: ({i}, {j}) = {number}")
-                    print(f"{number} ", end="")
-
                     # OCR 중 현재 셀 하이라이트해서 보기
                     preview = processed.copy()
                     h, w = preview.shape[:2]
@@ -127,6 +193,10 @@ def main():
                     cv2.rectangle(preview, (x1, y1), (x2, y2), (0, 0, 255), 2)
                     cv2.imshow("OCR 진행중", preview)
                     cv2.waitKey(1)
+
+                    number = recognize_number(cell)
+                    numbers.append(number)
+                    print(f"{number} ", end="", flush=True)
                 print()
 
                 f.write(''.join(numbers) + '\n')
