@@ -32,6 +32,11 @@ int main() {
         }
     }
     
+    if (cnt[0] != 0) {
+        cerr << INPUT_DIR << "에 숫자 0이 포함되어 있음. 1~9만 포함해야 함\n";
+        return 1;
+    }
+
     for (int i = 1; i <= 9; i++) cout << i << ": " << cnt[i] << "\n";
     return 0;
 }
