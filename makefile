@@ -21,7 +21,7 @@ count: $(BIN_DIR)/count
 	./$(BIN_DIR)/count
 
 board:
-	python bin/image_to_board.py
+	source .venv/bin/activate && python bin/image_to_board.py
 
 clean:
 	rm -f $(TARGETS)
