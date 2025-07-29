@@ -4,4 +4,5 @@ bruteforce
 bruteforce.exe
 count
 count.exe
-*.txt
+board.txt
+solution.txt
