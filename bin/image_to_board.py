@@ -140,7 +140,7 @@ def ask_user_for_number(cell_img, predicted, confidence):
     return result_holder["value"]
 
 # 숫자 OCR
-def recognize_number(cell_img, threshold=70):
+def recognize_number(cell_img, threshold=90):
     gray = cv2.cvtColor(cell_img, cv2.COLOR_BGR2GRAY)
     _, threshed = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)
     config = '--oem 3 --psm 10 -c tessedit_char_whitelist=123456789'
