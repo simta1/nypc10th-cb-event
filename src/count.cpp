@@ -14,9 +14,14 @@ void init() {
     }
 
     for (int i = 0; i < rows; i++) {
-        string st;
-        fin >> st;
-        for (int j = 0; j < cols; j++) board[i][j] = st[j] & 15;
+        for (int j = 0; j < cols; j++) {
+            char ch;
+            if (!(fin >> ch) || ch < '1' || ch > '9') {
+                cerr << "data/board.txt 형식 잘못됨\n";
+                exit(1);
+            }
+            board[i][j] = ch & 15;
+        }
     }
     
     fin.close();
@@ -30,11 +35,6 @@ int main() {
         for (int j = 0; j < cols; j++) {
             ++cnt[board[i][j]];
         }
-    }
-    
-    if (cnt[0] != 0) {
-        cerr << INPUT_DIR << "에 숫자 0이 포함되어 있음. 1~9만 포함해야 함\n";
-        return 1;
     }
 
     for (int i = 1; i <= 9; i++) cout << i << ": " << cnt[i] << "\n";

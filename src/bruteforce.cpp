@@ -30,9 +30,14 @@ void init() {
     }
 
     for (int i = 0; i < rows; i++) {
-        string st;
-        fin >> st;
-        for (int j = 0; j < cols; j++) board[i][j] = st[j] & 15;
+        for (int j = 0; j < cols; j++) {
+            char ch;
+            if (!(fin >> ch) || ch < '1' || ch > '9') {
+                cerr << "data/board.txt 형식 잘못됨\n";
+                exit(1);
+            }
+            board[i][j] = ch & 15;
+        }
     }
     
     fin.close();
