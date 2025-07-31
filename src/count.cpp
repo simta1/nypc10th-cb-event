@@ -2,6 +2,7 @@
 using namespace std;
 
 const string INPUT_DIR = "data/board.txt";
+const string OUTPUT_DIR = "data/count.txt";
 
 constexpr int rows = 11, cols = 10;
 int board[rows][cols];
@@ -38,5 +39,14 @@ int main() {
     }
 
     for (int i = 1; i <= 9; i++) cout << i << ": " << cnt[i] << "\n";
+
+    ofstream fout(OUTPUT_DIR, ios::trunc);
+    if (!fout) {
+        cerr << OUTPUT_DIR << "를 열 수 없습니다.\n";
+    }
+    else {
+        for (int i = 1; i <= 9; i++) fout << i << ": " << cnt[i] << "\n";
+    }
+
     return 0;
 }
