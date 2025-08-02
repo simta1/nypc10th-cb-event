@@ -41,7 +41,9 @@ make count
 
 #### 1. 설치 (arch linux)
 ```
-sudo pacman -S tk tesseract tesseract-data-eng wl-clipboard
+sudo pacman -S tk tesseract tesseract-data-eng
+sudo pacman -S wl-clipboard # wayland
+sudo pacman -S xclip # X11
 
 python3 -m venv .venv
 source .venv/bin/activate

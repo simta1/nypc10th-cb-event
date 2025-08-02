@@ -9,39 +9,69 @@ import subprocess
 import platform
 
 def get_image_from_clipboard():
+    import subprocess, os, platform, cv2, numpy as np
     img_holder = {"img": None}
 
     def on_paste(event=None):
         print("Ctrl+V 눌림, 클립보드 이미지 가져오는 중...")
         img = None
+        is_linux = platform.system() == "Linux"
+        is_wayland = os.environ.get("WAYLAND_DISPLAY") or os.environ.get("XDG_SESSION_TYPE") == "wayland"
 
-        if platform.system() == "Linux":
-            # Wayland 환경에서 wl-paste 사용
-            temp_path = "/tmp/clipboard.png"
-            try:
-                with open(temp_path, 'wb') as f:
+        try:
+            if is_linux and is_wayland:
+                # Wayland → wl-paste
+                temp_path = "/tmp/clipboard.png"
+                with open(temp_path, "wb") as f:
                     subprocess.run(["wl-paste", "--type", "image/png"], stdout=f, check=True)
                 if os.path.exists(temp_path):
                     img = cv2.imread(temp_path)
-            except Exception as e:
-                print(f"Wayland에서 이미지 클립보드 실패: {e}")
-        else:
-            # Windows/macOS
-            try:
+
+            elif is_linux and not is_wayland:
+                # X11 → xclip
+                temp_path = "/tmp/clipboard.png"
+                with open(temp_path, "wb") as f:
+                    subprocess.run(
+                        ["xclip", "-selection", "clipboard", "-t", "image/png", "-o"],
+                        stdout=f, check=True
+                    )
+                if os.path.exists(temp_path):
+                    img = cv2.imread(temp_path)
+
+                # PNG 아닌 경우
+                if img is None or img.size == 0:
+                    for mime in ("image/bmp", "image/jpg", "image/jpeg"):
+                        try:
+                            with open(temp_path, "wb") as f:
+                                subprocess.run(
+                                    ["xclip", "-selection", "clipboard", "-t", mime, "-o"],
+                                    stdout=f, check=True
+                                )
+                            test = cv2.imread(temp_path)
+                            if test is not None and test.size > 0:
+                                img = test
+                                break
+                        except Exception:
+                            pass
+
+            else:
+                # Windows or macOS → Pillow ImageGrab
                 from PIL import ImageGrab, Image
                 grabbed = ImageGrab.grabclipboard()
                 if isinstance(grabbed, Image.Image):
                     img = cv2.cvtColor(np.array(grabbed), cv2.COLOR_RGB2BGR)
-            except Exception as e:
-                print(f"ImageGrab 실패: {e}")
 
-        if img is not None:
+        except Exception as e:
+            print(f"클립보드에서 이미지 가져오기 실패: {e}")
+
+        if img is not None and img.size > 0:
             img_holder["img"] = img
             print("이미지 붙여넣기 완료")
             root.destroy()
         else:
             print("클립보드에 유효한 이미지가 없습니다.")
 
+    import tkinter as tk
     root = tk.Tk()
     root.title("Ctrl+V로 이미지 붙여넣기")
     root.geometry("300x150")
