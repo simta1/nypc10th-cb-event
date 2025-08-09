@@ -45,7 +45,7 @@ async function setup() {
 		console.warn(`${MOVE_DIR} 로딩 중 예외 발생, 무시함:`, e);
 	}
 
-	createCanvas(cols * cellSize, rows * cellSize + 40);
+	createCanvas(cols * cellSize, rows * cellSize + 20 + 30 * 6 + 20);
 	textAlign(CENTER, CENTER);
 	textSize(24);
 	rectMode(CORNER);
@@ -69,21 +69,29 @@ async function setup() {
 function draw() {
 	background(25, 30, 50);
     
-    let aCount = 0, bCount = 0;
+    let cnt1 = 0, cnt2 = 0;
 	for (let i = 0; i < rows; i++) {
 		for (let j = 0; j < cols; j++) {
-			if (owner[i][j] === 1) ++aCount;
-			else if (owner[i][j] === 2) ++bCount;
+			if (owner[i][j] === ME) ++cnt1;
+			else if (owner[i][j] === PINKBIN) ++cnt2;
 		}
     }
-	let diff = aCount - bCount;
-	let playerName = player === 1 ? "A (Green)" : "B (Pink)";
-	let statusText = `Current Player: ${playerName}   (A: ${aCount}, B: ${bCount}, Diff: ${diff})`;
+	let diff = cnt1 - cnt2;
+	let playerName = player === 1 ? "You (Green)" : "Bot (Pink)";
+	let texts = [
+		`Current Player: ${playerName}`,
+		`score: ${cnt1} - ${cnt2} = ${diff}`,
+		``,
+		`z : undo`,
+		`y : redo`,
+		`h : toggle hint`,
+		`space : skip turn`,
+	];
 
 	fill(255);
 	textAlign(LEFT, CENTER);
 	textSize(20);
-	text(statusText, 10, height - 20);
+	for (let i = 0; i < texts.length; i++) text(texts[i], 10, rows * cellSize + 20 + 30 * i);
 	textAlign(CENTER, CENTER);
 	textSize(24);
 
@@ -138,10 +146,14 @@ function draw() {
             }
             
             if (pos.length !== 0) {
-                let {i1, i2, j1, j2} = pos.reduce((a, b) => { // TODO 아직 정확한 기준 모르긴 함
+                let {i1, i2, j1, j2} = pos.reduce((a, b) => {
                     if (a.i1 < b.i1) return a;
                     if (a.i1 > b.i1) return b;
-                    return a.j1 <= b.j1 ? a : b;
+					
+                    if (a.j1 < b.j1) return a;
+                    if (a.j1 > b.j1) return b;
+
+                    return a.j2 >= b.j2 ? a : b;
                 });
                 let j = j1 * cellSize;
                 let i = i1 * cellSize;
@@ -232,15 +244,6 @@ function keyPressed() {
     if (key === ' ') {
         player = 3 - player;
         updateHighlight();
-    }
-    if (key === 'b' || key === 'B') {
-        if (pos.length === 0) return;
-        let {i1, i2, j1, j2} = pos.reduce((a, b) => { // TODO
-            if (a.i1 < b.i1) return a;
-            if (a.i1 > b.i1) return b;
-            return a.j1 <= b.j1 ? a : b;
-        });
-        flip(i1, i2, j1, j2);
     }
 	if (key === 'c' || key === 'C') {
 		if (flipQueue.length > 0) {
