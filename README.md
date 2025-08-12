@@ -1,6 +1,6 @@
 ## [nypc 10주년 캠퍼스 리그](https://nypc10th-cb-event.xvive.link/) 브루트포스봇
 
-![Image](https://github.com/user-attachments/assets/f8feb7d4-51d5-4d77-bcb1-ad52843ac8d4)
+![Image](https://github.com/user-attachments/assets/df69f392-87dd-4d7a-8064-0e273ea43fbe)
 
 ## Usage
 
