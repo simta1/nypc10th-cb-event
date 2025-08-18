@@ -82,10 +82,10 @@ function draw() {
 		`Current Player: ${playerName}`,
 		`score: ${cnt1} - ${cnt2} = ${diff}`,
 		``,
+		`c : make a move`,
 		`z : undo`,
 		`y : redo`,
 		`h : toggle hint`,
-		`space : skip turn`,
 	];
 
 	fill(255);

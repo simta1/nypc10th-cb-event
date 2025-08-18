@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+mkdir -p data
+
+: > data/board.txt
+: > data/count.txt
+: > data/solution.txt
+
+echo "Created data/board.txt, data/count.txt, data/solution.txt"
