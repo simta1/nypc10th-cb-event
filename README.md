@@ -6,7 +6,7 @@
 |-|-|
 
 ## Preview
-![Preview](https://github.com/user-attachments/assets/df69f392-87dd-4d7a-8064-0e273ea43fbe)
+![Preview](/static/preview.gif)
 
 ## Usage
 ### 1. 초기화
