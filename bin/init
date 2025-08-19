@@ -2,8 +2,8 @@
 
 mkdir -p data
 
-: > data/board.txt
-: > data/count.txt
-: > data/solution.txt
+touch data/board.txt
+touch data/count.txt
+touch data/solution.txt
 
 echo "Created data/board.txt, data/count.txt, data/solution.txt"

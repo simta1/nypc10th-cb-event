@@ -46,7 +46,7 @@ python3 -m http.server 5500 # 또는 vsc 사용 시 liveserver extension 실행
 http://localhost:5500/ 안될경우 http://127.0.0.1:5500/ 확인   
 `c`, `z`, `y` 사용   
 
-직접 마우스로 드래그해서 게임하는 것도 가능 하지만 `c`랑 같이 사용할 경우 꼬임   
+직접 마우스로 드래그해서 게임하는 것도 가능하지만 `c`랑 같이 사용할 경우 꼬임   
 턴 넘기기는 `space`로 가능
 
 
